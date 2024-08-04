@@ -2,18 +2,28 @@ def read_menu(file_path):
     menu_items = []
     with open(file_path, 'r') as file:
         for line in file:
-            # Extracting item name, price, and description
-            item_name, rest = line.split(' - ($')
-            price, description = rest.split(') - ')
-            price = float(price.strip())
-            item_name = item_name.strip()
-            description = description.strip()
+            line = line.strip()  # Remove leading/trailing whitespace
+            if not line:  # Skip empty lines
+                continue
+            
+            # Check if the line contains the expected format
+            if ' - ($' in line:
+                try:
+                    item_name, rest = line.split(' - ($')
+                    price, description = rest.split(') - ')
+                    price = float(price.strip())
+                    item_name = item_name.strip()
+                    description = description.strip()
 
-            menu_items.append({
-                'name': item_name,
-                'price': price,
-                'description': description
-            })
+                    menu_items.append({
+                        'name': item_name,
+                        'price': price,
+                        'description': description
+                    })
+                except ValueError as e:
+                    print(f"Error processing line: '{line}'. Error: {e}")
+            else:
+                print(f"Line does not match expected format: '{line}'")
     return menu_items
 
 def calculate_average_price(menu_items):
